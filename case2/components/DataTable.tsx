@@ -7,6 +7,7 @@ type Props = {
 }
 export const DataTable: React.FC<Props> = ({ onEdit }) => {
   const [sort, setSort] = useState('A-Z')
+  const [search, setSearch] = useState('')
   const users: MyData[] = useSelector(selectAllData)
   const dispatch = useDispatch()
 
@@ -27,6 +28,12 @@ export const DataTable: React.FC<Props> = ({ onEdit }) => {
         } else {
           return a.name < b.name ? 1 : -1
         }
+      })
+      .filter((user) => {
+        return (
+          user.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+          user.familyName.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+        )
       })
       .map((item, index) => {
         return (
@@ -51,7 +58,14 @@ export const DataTable: React.FC<Props> = ({ onEdit }) => {
   return (
     <div className="col border px-3 py-3 my-3">
       <div className="row">
-        <div className="col">Arama</div>
+        <div className="col">
+          <input
+            className="form-control"
+            placeholder="Arama"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
         <select
           id="sortInput"
           className="col form-control"
